@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHINE AI</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Arial,sans-serif; background:#080b1c; color:white; min-height:100vh; }
+.screen { display:none; min-height:100vh; width:100%; }
+
+/* INTRO */
+#intro { display:flex; position:fixed; inset:0; z-index:20; align-items:center; justify-content:center; background:#080b1c; }
+.intro-stage { position:relative; width:250px; height:250px; display:flex; align-items:center; justify-content:center; }
+.sparkle {
+  width:75px; height:75px;
+  background:linear-gradient(135deg,white,#b49aff,#628dff);
+  clip-path:polygon(50% 0%,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0% 50%,38% 38%);
+  filter:drop-shadow(0 0 20px #9275ff);
+  animation:sparkle 3.5s ease-in-out forwards;
+}
+.burst {
+  position:absolute; width:12px; height:12px; border-radius:50%;
+  background:conic-gradient(transparent,#b6a3ff,transparent,#779cff,transparent,white,transparent);
+  filter:blur(4px); opacity:0; animation:burst 3.5s ease-out forwards;
+}
+.intro-name { position:absolute; top:165px; font-size:26px; font-weight:bold; letter-spacing:10px; opacity:0; animation:nameReveal 3.5s ease forwards; }
+@keyframes sparkle {
+  0%{opacity:0;transform:scale(.1)} 15%{opacity:1;transform:scale(1.1)}
+  32%{opacity:1;transform:scale(1)} 48%{opacity:0;transform:scale(.02)}
+  70%{opacity:0;transform:scale(.02)} 80%{opacity:1;transform:scale(1.5)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes burst {
+  0%,50%{opacity:0;transform:scale(.1)} 68%{opacity:.9;transform:scale(13)}
+  85%{opacity:.3;transform:scale(5)} 100%{opacity:0;transform:scale(1)}
+}
+@keyframes nameReveal {
+  0%,75%{opacity:0;transform:translateY(12px)} 100%{opacity:1;transform:translateY(0)}
+}
+
+/* SHARED LOGO */
+.logo { font-size:29px; font-weight:bold; letter-spacing:7px; margin-bottom:40px; }
+.logo-mark {
+  display:inline-block; width:27px; height:27px; margin-right:12px; vertical-align:middle;
+  background:linear-gradient(135deg,#c5aaff,#628dff);
+  clip-path:polygon(50% 0%,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0% 50%,38% 38%);
+}
+
+/* WELCOME */
+#welcome {
+  align-items:center; justify-content:center; text-align:center; padding:25px;
+  background:radial-gradient(ellipse at 50% 40%,#29205e,#11152e 48%,#080b1c 80%);
+}
+.welcome-title { font-size:clamp(38px,6vw,62px); line-height:1.15; margin-bottom:20px; }
+.gradient-text {
+  background:linear-gradient(90deg,#c3a5ff,#709fff);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.subtitle { color:#b9bfd5; line-height:1.8; max-width:460px; margin:0 auto 35px; font-size:16px; }
+.primary-btn {
+  border:none; padding:16px 35px; border-radius:30px; color:white; font-size:16px;
+  font-weight:bold; cursor:pointer; background:linear-gradient(100deg,#8064ed,#477cf5);
+  box-shadow:0 8px 30px #5c65e044; transition:.25s;
+}
+.primary-btn:hover { transform:translateY(-3px); box-shadow:0 12px 35px #7771ff66; }
+.signin-link { display:block; margin-top:22px; color:#c4b7ff; cursor:pointer; }
+
+/* AUTH */
+#auth { align-items:center; justify-content:center; padding:25px; background:radial-gradient(circle at top,#242052,#080b1c 65%); }
+.auth-card { width:100%; max-width:410px; padding:35px; border:1px solid #ffffff18; background:#151831; border-radius:22px; box-shadow:0 15px 60px #0005; }
+.auth-card h2 { font-size:27px; margin-bottom:10px; }
+.auth-card p { color:#aeb4ce; margin-bottom:25px; line-height:1.5; }
+.auth-card input { width:100%; padding:14px; margin:9px 0; background:#0c1026; border:1px solid #343957; border-radius:10px; color:white; outline:none; }
+.auth-card input:focus { border-color:#9279ff; }
+.auth-card .primary-btn { width:100%; margin-top:17px; }
+.auth-switch { text-align:center; margin-top:20px; color:#c0b4ff; cursor:pointer; }
+.back-link { color:#aeb4ce; cursor:pointer; display:inline-block; margin-bottom:25px; }
+
+/* CHAT */
+#chat { height:100vh; min-height:100vh; background:#0a0d1d; }
+.sidebar { width:250px; flex-shrink:0; background:#10142a; border-right:1px solid #ffffff12; padding:22px; display:flex; flex-direction:column; gap:18px; }
+.sidebar .logo { font-size:21px; margin:5px 0 15px; }
+.new-chat { background:#252b4a; border:1px solid #41476b; color:white; padding:13px; border-radius:12px; cursor:pointer; }
+.history-title { color:#858da9; font-size:12px; margin-top:15px; }
+.history-item { color:#c1c7dd; font-size:14px; padding:10px; border-radius:8px; cursor:pointer; }
+.history-item:hover { background:#202644; }
+.chat-main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.chat-top { padding:22px 30px; border-bottom:1px solid #ffffff12; font-weight:bold; }
+.messages { flex:1; overflow-y:auto; padding:35px 20px; display:flex; flex-direction:column; align-items:center; gap:20px; }
+.chat-welcome { margin:auto; text-align:center; }
+.chat-welcome h1 { font-size:35px; margin-bottom:12px; }
+.chat-welcome p { color:#aab1ca; }
+.message { max-width:720px; width:100%; padding:16px 20px; border-radius:15px; line-height:1.6; white-space:pre-wrap; }
+.user-message { background:#242b50; }
+.ai-message { background:#151a32; color:#e1e5f5; }
+.composer-area { padding:15px 20px 25px; }
+.composer { max-width:760px; margin:auto; display:flex; gap:10px; padding:10px; background:#171d38; border:1px solid #343c61; border-radius:18px; }
+.composer input { flex:1; min-width:0; background:transparent; border:none; outline:none; color:white; font-size:15px; padding:10px; }
+.send-btn { border:none; border-radius:12px; padding:0 20px; color:white; background:linear-gradient(100deg,#8064ed,#477cf5); cursor:pointer; }
+.disclaimer { text-align:center; font-size:11px; color:#747d9b; margin-top:12px; }
+
+@media(max-width:650px) {
+  #chat { flex-direction:column; }
+  .sidebar { width:100%; padding:12px 16px; flex-direction:row; align-items:center; gap:12px; border-right:none; border-bottom:1px solid #ffffff12; }
+  .sidebar .logo { margin:0; font-size:17px; }
+  .sidebar .history-title,.sidebar .history-item { display:none; }
+  .new-chat { margin-left:auto; padding:10px 12px; }
+  .chat-top { display:none; }
+  .auth-card { padding:25px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 1. INTRO -->
+<section id="intro" class="screen">
+  <div class="intro-stage">
+    <div class="burst"></div>
+    <div class="sparkle"></div>
+    <div class="intro-name">SHINE</div>
+  </div>
+</section>
+
+<!-- 2. WELCOME -->
+<section id="welcome" class="screen">
+  <div>
+    <div class="logo"><span class="logo-mark"></span>SHINE</div>
+    <h1 class="welcome-title">Intelligence,<br><span class="gradient-text">made simple.</span></h1>
+    <p class="subtitle">A brighter way to think. Your ideas, questions and creativity — all in one place.</p>
+    <button class="primary-btn" onclick="showAuth('signup')">Get Started for Free</button>
+    <span class="signin-link" onclick="showAuth('signin')">Already have an account? Sign in</span>
+  </div>
+</section>
+
+<!-- 3. SIGN IN / SIGN UP -->
+<section id="auth" class="screen">
+  <div class="auth-card">
+    <span class="back-link" onclick="showScreen('welcome')">← Back</span>
+    <h2 id="auth-title">Create your account</h2>
+    <p id="auth-description">Join SHINE and get started.</p>
+    <form onsubmit="handleAuth(event)">
+      <input id="name-field" type="text" placeholder="Your name">
+      <input id="email-field" type="email" placeholder="Email address" required>
+      <input id="password-field" type="password" placeholder="Password" required minlength="6">
+      <button class="primary-btn" id="auth-button" type="submit">Create account</button>
+    </form>
+    <div class="auth-switch" id="auth-switch" onclick="toggleAuth()">Already have an account? Sign in</div>
+  </div>
+</section>
+
+<!-- 4. CHAT -->
+<section id="chat" class="screen">
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-mark"></span>SHINE</div>
+    <button class="new-chat" onclick="newChat()">+ New chat</button>
+    <div class="history-title">RECENT CHATS</div>
+    <div id="history-list"></div>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-top">SHINE AI</div>
+    <div class="messages" id="messages">
+      <div class="chat-welcome" id="chat-welcome">
+        <h1>How can I help you today?</h1>
+        <p>Ask anything. Let's figure it out together.</p>
+      </div>
+    </div>
+    <div class="composer-area">
+      <div class="composer">
+        <input id="message-input" placeholder="Message SHINE..." onkeydown="if(event.key==='Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">↑</button>
+      </div>
+      <div class="disclaimer">SHINE prototype · Demo responses only</div>
+    </div>
+  </main>
+</section>
+
+<script>
+const screens = ["intro", "welcome", "auth", "chat"];
+
+function showScreen(name) {
+  screens.forEach(id => {
+    document.getElementById(id).style.display = "none";
+  });
+  document.getElementById(name).style.display = "flex";
+}
+
+/* INTRO AUTOMATICALLY PLAYS FIRST */
+window.addEventListener("load", () => {
+  showScreen("intro");
+  setTimeout(() => showScreen("welcome"), 4000);
+});
+
+/* AUTHENTICATION DEMO */
+let authMode = "signup";
+
+function showAuth(mode) {
+  authMode = mode;
+  updateAuthScreen();
+  showScreen("auth");
+}
+
+function toggleAuth() {
+  authMode = authMode === "signin" ? "signup" : "signin";
+  updateAuthScreen();
+}
+
+function updateAuthScreen() {
+  const signup = authMode === "signup";
+  document.getElementById("auth-title").textContent =
+    signup ? "Create your SHINE account" : "Welcome back";
+  document.getElementById("auth-description").textContent =
+    signup ? "Create an account to get started." : "Sign in to continue your journey.";
+  document.getElementById("name-field").style.display = signup ? "block" : "none";
+  document.getElementById("name-field").required = signup;
+  document.getElementById("auth-button").textContent = signup ? "Create account" : "Sign in";
+  document.getElementById("auth-switch").textContent =
+    signup ? "Already have an account? Sign in" : "Don't have an account? Sign up";
+}
+
+function handleAuth(event) {
+  event.preventDefault();
+  // Demo only. No real account is created or verified.
+  showScreen("chat");
+  newChat();
+}
+
+/* CHAT DEMO */
+function newChat() {
+  document.getElementById("messages").innerHTML = `
+    <div class="chat-welcome" id="chat-welcome">
+      <h1>How can I help you today?</h1>
+      <p>Ask anything. Let's figure it out together.</p>
+    </div>`;
+  document.getElementById("message-input").focus();
+}
+
+function sendMessage() {
+  const input = document.getElementById("message-input");
+  const message = input.value.trim();
+  if (!message) return;
+
+  const messages = document.getElementById("messages");
+  const welcome = document.getElementById("chat-welcome");
+  if (welcome) welcome.remove();
+
+  const userMessage = document.createElement("div");
+  userMessage.className = "message user-message";
+  userMessage.textContent = message;
+  messages.appendChild(userMessage);
+  input.value = "";
+
+  const aiMessage = document.createElement("div");
+  aiMessage.className = "message ai-message";
+  aiMessage.textContent =
+    "Hey! I'm SHINE's demo assistant. My live AI connection hasn't been added yet. Once we connect an AI API, I'll be able to answer your questions!";
+  messages.appendChild(aiMessage);
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
+</body>
+</html>
